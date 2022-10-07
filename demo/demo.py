@@ -15,7 +15,7 @@ import numpy as np
 import tqdm
 from torch.backends import cudnn
 
-sys.path.append('.')
+sys.path.append(".")
 
 from fastreid.config import get_cfg
 from fastreid.utils.logger import setup_logger
@@ -50,20 +50,16 @@ def get_parser():
     )
     parser.add_argument(
         "--parallel",
-        action='store_true',
-        help='If use multiprocess for feature extraction.'
+        action="store_true",
+        help="If use multiprocess for feature extraction.",
     )
     parser.add_argument(
         "--input",
         nargs="+",
         help="A list of space separated input images; "
-             "or a single glob pattern such as 'directory/*.jpg'",
+        "or a single glob pattern such as 'directory/*.jpg'",
     )
-    parser.add_argument(
-        "--output",
-        default='demo_output',
-        help='path to save features'
-    )
+    parser.add_argument("--output", default="demo_output", help="path to save features")
     parser.add_argument(
         "--opts",
         help="Modify config options using the command-line 'KEY VALUE' pairs",
@@ -80,7 +76,7 @@ def postprocess(features):
     return features
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = get_parser().parse_args()
     cfg = setup_cfg(args)
     demo = FeatureExtractionDemo(cfg, parallel=args.parallel)
@@ -94,4 +90,9 @@ if __name__ == '__main__':
             img = cv2.imread(path)
             feat = demo.run_on_image(img)
             feat = postprocess(feat)
-            np.save(os.path.join(args.output, os.path.basename(path).split('.')[0] + '.npy'), feat)
+            np.save(
+                os.path.join(
+                    args.output, os.path.basename(path).split(".")[0] + ".npy"
+                ),
+                feat,
+            )

@@ -6,7 +6,7 @@
 import logging
 import sys
 
-sys.path.append('.')
+sys.path.append(".")
 
 from fastreid.config import get_cfg
 from fastreid.engine import DefaultTrainer
@@ -32,9 +32,13 @@ class AttrTrainer(DefaultTrainer):
         Overwrite it if you'd like a different model.
         """
         model = DefaultTrainer.build_model(cfg)
-        if cfg.MODEL.LOSSES.BCE.WEIGHT_ENABLED and \
-                AttrTrainer.sample_weights is not None:
-            setattr(model, "sample_weights", AttrTrainer.sample_weights.to(model.device))
+        if (
+            cfg.MODEL.LOSSES.BCE.WEIGHT_ENABLED
+            and AttrTrainer.sample_weights is not None
+        ):
+            setattr(
+                model, "sample_weights", AttrTrainer.sample_weights.to(model.device)
+            )
         else:
             setattr(model, "sample_weights", None)
         return model
@@ -46,11 +50,15 @@ class AttrTrainer(DefaultTrainer):
         train_items = list()
         attr_dict = None
         for d in cfg.DATASETS.NAMES:
-            dataset = DATASET_REGISTRY.get(d)(root=_root, combineall=cfg.DATASETS.COMBINEALL)
+            dataset = DATASET_REGISTRY.get(d)(
+                root=_root, combineall=cfg.DATASETS.COMBINEALL
+            )
             if comm.is_main_process():
                 dataset.show_train()
             if attr_dict is not None:
-                assert attr_dict == dataset.attr_dict, f"attr_dict in {d} does not match with previous ones"
+                assert (
+                    attr_dict == dataset.attr_dict
+                ), f"attr_dict in {d} does not match with previous ones"
             else:
                 attr_dict = dataset.attr_dict
             train_items.extend(dataset.train)
